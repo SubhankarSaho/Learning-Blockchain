@@ -4,36 +4,22 @@ const assert = require('assert');
 const mocha = require('mocha');
 
 const web3 = new Web3(ganache.provider());
+const { interface, bytecode } = require('../compile');
+
 let accounts;
+let inbox;
+
 beforeEach(async () => {
     accounts = await web3.eth.getAccounts();
+
+    inbox = await new web3.eth.Contract(JSON.parse(interface))
+        .deploy({ data: bytecode, arguments: ["hi there!"] })
+        .send({ from: accounts[0], gas: '1000000' });
+
 });
 
 describe('deploys a contract', () => {
     it('deploy', () => {
-        console.log(accounts);
+        console.log(inbox);
     });
 });
-// let C;
-
-
-// class Car {
-//     drive() {
-//         return 'vroom';
-//     }
-//     park() {
-//         return 'stop';
-//     }
-// }
-
-// beforeEach(() => {
-//     C = new Car();
-// });
-// describe("Carr", () => {
-//     it("can drive", () => {
-//         assert.equal(C.drive(), 'vroom');
-//     });
-//     it("can park", () => {
-//         assert.equal(C.park(), 'stop');
-//     });
-// });
